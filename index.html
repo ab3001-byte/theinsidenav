@@ -249,8 +249,9 @@
         <h3>Get the next story in your inbox.</h3>
         <p>Free. One email when a new story is out. Leave anytime.</p>
       </div>
-      <form name="subscribe" method="POST" action="/thanks/" data-netlify="true" netlify-honeypot="company">
+      <form name="subscribe" method="POST" action="/thanks/" data-netlify="true" netlify-honeypot="company" onsubmit="try{localStorage.setItem('tin_subscribed','1')}catch(e){}">
         <input type="hidden" name="form-name" value="subscribe">
+        <input type="hidden" name="source" value="homepage">
         <p class="hp"><label>Leave empty <input name="company"></label></p>
         <label for="em" class="hp">Email address</label>
         <input id="em" type="email" name="email" placeholder="Your email address" required>
@@ -266,6 +267,17 @@
 /* ============ ADD NEW POSTS HERE (newest on top) ============
    colour options: sky, mint, peach, lavender, butter, rose     */
 var POSTS = [
+  {
+    url: "/protect-and-grow-rebalancing/",
+    title: "Same money, same returns, ₹1.42 crore apart. How we rebalance to prevent it.",
+    dek: "Two retirees, ₹5 crore each, the same returns. One ends far poorer. The rules we use so a crash never forces a sale.",
+    date: "18 November 2026",
+    read: "12 min read",
+    cover: "₹1.42 Cr",
+    coverNote: "Same returns, different order",
+    colour: "lavender",
+    image: "/protect-and-grow-rebalancing/cover.jpg"
+  },
   {
     url: "/sme-to-mainboard-siddhika-coatings/",
     title: "SME to Mainboard: Siddhika Coatings, the full kundali",

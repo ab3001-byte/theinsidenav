@@ -249,7 +249,7 @@
         <h3>Get the next story in your inbox.</h3>
         <p>Free. One email when a new story is out. Leave anytime.</p>
       </div>
-      <form name="subscribe" method="POST" action="/thanks/" data-netlify="true" netlify-honeypot="company" onsubmit="try{localStorage.setItem('tin_subscribed','1')}catch(e){}">
+      <form name="subscribe" method="POST" action="/thanks/" data-netlify="true" netlify-honeypot="company" onsubmit="if(window.tinRemember)tinRemember();else try{localStorage.setItem('tin_subscribed','1')}catch(e){}">
         <input type="hidden" name="form-name" value="subscribe">
         <input type="hidden" name="source" value="homepage">
         <p class="hp"><label>Leave empty <input name="company"></label></p>
@@ -267,6 +267,17 @@
 /* ============ ADD NEW POSTS HERE (newest on top) ============
    colour options: sky, mint, peach, lavender, butter, rose     */
 var POSTS = [
+  {
+    url: "/grocery-bill-inflation-crude-oil/",
+    title: "Why is your grocery bill rising, and is crude oil really to blame?",
+    dek: "Onions, a weak monsoon, imported fertiliser and the long road from farm to plate. The real story behind India's 6.09% inflation.",
+    date: "19 November 2026",
+    read: "9 min read",
+    cover: "6.09%",
+    coverNote: "Not just crude oil",
+    colour: "peach",
+    image: "/grocery-bill-inflation-crude-oil/cover.jpg"
+  },
   {
     url: "/protect-and-grow-rebalancing/",
     title: "Same money, same returns, ₹1.42 crore apart. How we rebalance to prevent it.",
@@ -448,5 +459,6 @@ var POSTS = [
   var g=document.getElementById('grid'); if(html){g.innerHTML=html;}else{g.style.display='none';}
 })();
 </script>
+<script src="/gate.js" defer></script>
 </body>
 </html>

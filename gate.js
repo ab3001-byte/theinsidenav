@@ -1,14 +1,32 @@
 /* The Inside NAV: soft subscribe gate.
    New readers see the first part of an article, then a free email sign-up to continue.
-   Readers who have subscribed in this browser (here or on the homepage) never see it.
+   Subscribers are remembered three ways, so they are not asked again:
+   1. localStorage, 2. a cookie, 3. a server-set cookie from /.netlify/functions/remember
+   (server cookies survive Safari's 7-day wipe of script storage).
+   Links with ?sub=1 (use these in emails to subscribers) also unlock.
    Placement: <div id="gate-here"></div> inside .story, or, if missing, before the 3rd section heading. */
 (function () {
-  var KEY = 'tin_subscribed';
-  function isSub() { try { return localStorage.getItem(KEY) === '1'; } catch (e) { return false; } }
-  function setSub() { try { localStorage.setItem(KEY, '1'); } catch (e) {} }
+  var KEY = 'tin_subscribed', REF = 'tin_sub_ref', DAY = 864e5;
+  function ls(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } }
+  function hasCookie() { return /(?:^|;\s*)tin_sub=1\b/.test(document.cookie); }
+  function isSub() { return ls(KEY) === '1' || hasCookie(); }
+  function serverRemember() {
+    ls(REF, String(Date.now()));
+    try { fetch('/.netlify/functions/remember', { method: 'POST', credentials: 'same-origin', keepalive: true }).catch(function () {}); } catch (e) {}
+  }
+  function setSub() {
+    ls(KEY, '1');
+    try { document.cookie = 'tin_sub=1; Max-Age=34560000; Path=/; SameSite=Lax; Secure'; } catch (e) {}
+    serverRemember();
+  }
+  window.tinRemember = setSub;
 
   if (/[?&]sub=1\b/.test(location.search)) setSub();
-  if (isSub()) return;
+  if (isSub()) {
+    // Keep all three in sync, and refresh the server cookie about once a month.
+    if (ls(KEY) !== '1' || !hasCookie() || Date.now() - Number(ls(REF) || 0) > 30 * DAY) setSub();
+    return;
+  }
 
   var story = document.querySelector('.story');
   if (!story) return;
@@ -54,7 +72,7 @@
       '<input type="email" name="email" placeholder="Your email address" required autocomplete="email">' +
       '<button type="submit">Continue reading</button>' +
     '</form>' +
-    '<small>Already subscribed? Enter the same email to continue.</small>';
+    '<small>Already subscribed? Enter your email once and this device will remember you.</small>';
   marker.parentNode.insertBefore(fade, marker);
   marker.parentNode.insertBefore(gate, marker);
 
